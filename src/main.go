@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"time"
 
 	"github.com/aws/aws-lambda-go/lambda"
@@ -32,10 +33,11 @@ type Response struct {
 
 // Variables for the nuclei binary, filesystem location, and temporary files
 var (
-	nucleiBinary = "/opt/nuclei"
-	fileSystem   = "/tmp/"
-	targetsFile  = fileSystem + "targets.txt"
-	scanOutput   = fileSystem + "output.json"
+	nucleiBinary    = "/opt/nuclei"
+	nucleiTemplates = "/opt/"
+	fileSystem      = "/tmp/"
+	targetsFile     = fileSystem + "targets.txt"
+	scanOutput      = fileSystem + "output.json"
 )
 
 func handler(ctx context.Context, event Event) (Response, error) {
@@ -48,6 +50,28 @@ func handler(ctx context.Context, event Event) (Response, error) {
 			Error: "Nuclei requires a targets, args, and output to run. Please specify the target(s), args, and output within the event.",
 		}, nil
 	}
+
+	
+	pattern := "/opt/nuclei-templates*"
+
+	matches, err := filepath.Glob(pattern)
+
+	if err != nil {
+		fmt.Printf("Error while matching pattern: %v, can't search for templates directory.\n", err)
+	}
+
+	if len(matches) > 0 {
+		nucleiTemplates = matches[0]
+		fmt.Printf("First directory matching the pattern: %s\n", nucleiTemplates)
+
+	} else {
+		fmt.Printf("Did not find any matching templates directories.")
+	}
+
+	//explicitly set our /opt/nuclei-templates directory, since .templates-config.json appears to be ignored
+	event.Args = append(event.Args, "-ud", nucleiTemplates)
+	//don't update templates, we're on a readonly FS
+	event.Args = append(event.Args, "-duc")
 
 	// Check to see if it is a single target or multiple
 	if len(event.Targets) == 1 {

@@ -35,6 +35,7 @@ resource "null_resource" "download_templates" {
 resource "aws_s3_object" "upload_nuclei" {
   depends_on = [null_resource.download_nuclei]
 
+
   bucket = aws_s3_bucket.bucket.id
   key    = "nuclei.zip"
   source = "${path.module}/src/nuclei.zip"

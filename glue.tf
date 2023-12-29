@@ -15,61 +15,59 @@ resource "aws_glue_catalog_table" "table" {
     output_format = "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat"
 
     columns {
-      name = "extracted-results"
-      type = "array<string>"
+      name = "name"
+      type = "string"
     }
     columns {
       name = "host"
       type = "string"
     }
-    columns {
-      name = "info"
-      type = "struct<author:array<string>,classification:string,description:string,name:string,reference:array<string>,severity:string,tags:array<string>>"
-    }
-    columns {
-      name = "metadata"
-      type = "struct<shodan-query:string,verified:string>"
-    }
-    columns {
-      name = "matched-at"
-      type = "string"
-    }
-    columns {
-      name = "matched-line"
-      type = "string"
-    }
-    columns {
-      name = "matcher-status"
-      type = "string"
-    }
-    columns {
-      name = "template-id"
-      type = "string"
-    }
-    columns {
-      name = "timestamp"
-      type = "string"
-    }
+
     columns {
       name = "type"
       type = "string"
     }
+
+    columns {
+      name = "severity"
+      type = "string"
+    }
+
+    columns {
+      name = "matched-at"
+      type = "string"
+    }
+
+    columns {
+      name = "description"
+      type = "string"
+    }
+
+    columns {
+      name = "metadata"
+      type = "struct<shodan-query:string,verified:string>"
+    }
+    
+    columns {
+      name = "timestamp"
+      type = "string"
+    }
+    
     columns {
       name = "matcher-name"
       type = "string"
     }
-    columns {
-      name = "curl-command"
-      type = "string"
-    }
+    
     columns {
       name = "ip"
       type = "string"
     }
+
     columns {
       name = "template-url"
       type = "string"
     }
+
     columns {
       name = "template"
       type = "string"
